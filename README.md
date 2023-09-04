@@ -8,6 +8,11 @@ By completing this lab, you demonstrate your understanding of the challenges inv
 
 Each model has its strengths and weaknesses, and engineering a real-world application often involves solving many problems without a perfect answer.
 
+### TO RUN
+conda activate -y -n udac python=3.7.6
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
+pip install -r clap.txt
+
 ### Why We're Here
 
 Photo sharing and photo storage services like to have location data for each photo that is uploaded. With the location data, these services can build advanced features, such as automatic suggestion of relevant tags or automatic photo organization, which help provide a compelling user experience. Although a photo's location can often be obtained by looking at the photo's metadata, many photos uploaded to these services will not have location metadata available. This can happen when, for example, the camera capturing the picture does not have GPS or if a photo's metadata is scrubbed due to privacy concerns.
