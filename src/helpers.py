@@ -99,7 +99,10 @@ def compute_mean_and_std():
 
         return d["mean"], d["std"]
 
+    ## ASSUMING WE GET STD AND MEAN OF TRAIN DATASET
     folder = get_data_location()
+    folder += '/train'
+    # print(folder)
     ds = datasets.ImageFolder(
         folder, transform=transforms.Compose([transforms.ToTensor()])
     )
@@ -156,3 +159,6 @@ def plot_confusion_matrix(pred, truth):
         idx = (confusion_matrix == 0)
         confusion_matrix[idx] = np.nan
         sns.heatmap(confusion_matrix, annot=True, ax=sub, linewidths=0.5, linecolor='lightgray', cbar=False)
+
+if __name__ == "__main__":
+    setup_env()

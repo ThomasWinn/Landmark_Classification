@@ -1,0 +1,4 @@
+landmark_images/
+.pytest_cache/
+checkpoints/
+src/__pycache__/
