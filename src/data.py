@@ -43,9 +43,9 @@ def get_data_loaders(
     data_transforms = {
         "train": transforms.Compose(
             [
-                transforms.ToTensor(),
                 transforms.Resize(256),
                 transforms.CenterCrop(224),
+                transforms.ToTensor(),
                 transforms.Normalize(mean, std)
             ]
         ),
@@ -130,50 +130,50 @@ def get_data_loaders(
     return data_loaders
 
 
-# def visualize_one_batch(data_loaders, max_n: int = 5):
-#     """
-#     Visualize one batch of data.
+def visualize_one_batch(data_loaders, max_n: int = 5):
+    """
+    Visualize one batch of data.
 
-#     :param data_loaders: dictionary containing data loaders
-#     :param max_n: maximum number of images to show
-#     :return: None
-#     """
+    :param data_loaders: dictionary containing data loaders
+    :param max_n: maximum number of images to show
+    :return: None
+    """
 
-#     # YOUR CODE HERE:
-#     # obtain one batch of training images
-#     # First obtain an iterator from the train dataloader
-#     dataiter  = # YOUR CODE HERE
-#     # Then call the .next() method on the iterator you just
-#     # obtained
-#     images, labels  = # YOUR CODE HERE
+    # YOUR CODE HERE:
+    # obtain one batch of training images
+    # First obtain an iterator from the train dataloader
+    dataiter  = iter(data_loaders['train'])
+    # Then call the .next() method on the iterator you just
+    # obtained
+    images, labels  = next(dataiter)
 
-#     # Undo the normalization (for visualization purposes)
-#     mean, std = compute_mean_and_std()
-#     invTrans = transforms.Compose(
-#         [
-#             transforms.Normalize(mean=[0.0, 0.0, 0.0], std=1 / std),
-#             transforms.Normalize(mean=-mean, std=[1.0, 1.0, 1.0]),
-#         ]
-#     )
+    # Undo the normalization (for visualization purposes)
+    mean, std = compute_mean_and_std()
+    invTrans = transforms.Compose(
+        [
+            transforms.Normalize(mean=[0.0, 0.0, 0.0], std=1 / std),
+            transforms.Normalize(mean=-mean, std=[1.0, 1.0, 1.0]),
+        ]
+    )
 
-#     images = invTrans(images)
+    images = invTrans(images)
 
-#     # YOUR CODE HERE:
-#     # Get class names from the train data loader
-#     class_names  = # YOUR CODE HERE
+    # YOUR CODE HERE:
+    # Get class names from the train data loader
+    class_names  = data_loaders['train'].dataset.classes
 
-#     # Convert from BGR (the format used by pytorch) to
-#     # RGB (the format expected by matplotlib)
-#     images = torch.permute(images, (0, 2, 3, 1)).clip(0, 1)
+    # Convert from BGR (the format used by pytorch) to
+    # RGB (the format expected by matplotlib)
+    images = torch.permute(images, (0, 2, 3, 1)).clip(0, 1)
 
-#     # plot the images in the batch, along with the corresponding labels
-#     fig = plt.figure(figsize=(25, 4))
-#     for idx in range(max_n):
-#         ax = fig.add_subplot(1, max_n, idx + 1, xticks=[], yticks=[])
-#         ax.imshow(images[idx])
-#         # print out the correct label for each image
-#         # .item() gets the value contained in a Tensor
-#         ax.set_title(class_names[labels[idx].item()])
+    # plot the images in the batch, along with the corresponding labels
+    fig = plt.figure(figsize=(25, 4))
+    for idx in range(max_n):
+        ax = fig.add_subplot(1, max_n, idx + 1, xticks=[], yticks=[])
+        ax.imshow(images[idx])
+        # print out the correct label for each image
+        # .item() gets the value contained in a Tensor
+        ax.set_title(class_names[labels[idx].item()])
 
 
 ######################################################################################
@@ -192,27 +192,27 @@ def test_data_loaders_keys(data_loaders):
     assert set(data_loaders.keys()) == {"train", "valid", "test"}, "The keys of the data_loaders dictionary should be train, valid and test"
 
 
-# def test_data_loaders_output_type(data_loaders):
-#     # Test the data loaders
-#     dataiter = iter(data_loaders["train"])
-#     images, labels = dataiter.next()
+def test_data_loaders_output_type(data_loaders):
+    # Test the data loaders
+    dataiter = iter(data_loaders["train"])
+    images, labels = dataiter.next()
 
-#     assert isinstance(images, torch.Tensor), "images should be a Tensor"
-#     assert isinstance(labels, torch.Tensor), "labels should be a Tensor"
-#     assert images[0].shape[-1] == 224, "The tensors returned by your dataloaders should be 224x224. Did you " \
-#                                        "forget to resize and/or crop?"
-
-
-# def test_data_loaders_output_shape(data_loaders):
-#     dataiter = iter(data_loaders["train"])
-#     images, labels = dataiter.next()
-
-#     assert len(images) == 2, f"Expected a batch of size 2, got size {len(images)}"
-#     assert (
-#         len(labels) == 2
-#     ), f"Expected a labels tensor of size 2, got size {len(labels)}"
+    assert isinstance(images, torch.Tensor), "images should be a Tensor"
+    assert isinstance(labels, torch.Tensor), "labels should be a Tensor"
+    assert images[0].shape[-1] == 224, "The tensors returned by your dataloaders should be 224x224. Did you " \
+                                       "forget to resize and/or crop?"
 
 
-# def test_visualize_one_batch(data_loaders):
+def test_data_loaders_output_shape(data_loaders):
+    dataiter = iter(data_loaders["train"])
+    images, labels = dataiter.next()
 
-#     visualize_one_batch(data_loaders, max_n=2)
+    assert len(images) == 2, f"Expected a batch of size 2, got size {len(images)}"
+    assert (
+        len(labels) == 2
+    ), f"Expected a labels tensor of size 2, got size {len(labels)}"
+
+
+def test_visualize_one_batch(data_loaders):
+
+    visualize_one_batch(data_loaders, max_n=2)
