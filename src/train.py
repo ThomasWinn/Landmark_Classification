@@ -14,10 +14,12 @@ def train_one_epoch(train_dataloader, model, optimizer, loss):
     """
 
     if torch.cuda.is_available():
-        # YOUR CODE HERE: transfer the model to the GPU
-        # HINT: use .cuda()
+        # Transfer the model to the GPU
+        model = model.cuda()
 
     # YOUR CODE HERE: set the model to training mode
+
+    model.train()
     
     train_loss = 0.0
 

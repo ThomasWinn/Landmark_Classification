@@ -216,3 +216,13 @@ def test_data_loaders_output_shape(data_loaders):
 def test_visualize_one_batch(data_loaders):
 
     visualize_one_batch(data_loaders, max_n=2)
+
+
+if __name__ == '__main__':
+    dl = get_data_loaders()
+    ataiter  = iter(dl['train'])
+    # Then call the .next() method on the iterator you just
+    # obtained
+    images, labels  = next(ataiter)
+
+    print(images)
