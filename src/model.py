@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+import torch.nn.functional as F
 
 # define the CNN architecture
 class MyModel(nn.Module):
@@ -22,6 +22,7 @@ class MyModel(nn.Module):
 
             nn.Conv2d(32, 64, kernel_size=3, padding=1), # 56 x 56 x 64
             nn.BatchNorm2d(64),
+            # nn.Dropout(p=0.1),
             nn.ReLU(), 
             nn.Dropout(p=0.1),
             nn.MaxPool2d(2,2), # 28 x 28 x 64
@@ -31,10 +32,13 @@ class MyModel(nn.Module):
 
         self.head = nn.Sequential(
             nn.Linear(28 * 28 * 64, 10000),  # average between flatten features and num classes 50,176 x 10000
-            nn.ReLU(),
             nn.Dropout(p=dropout),
+            nn.ReLU(),
+            # nn.Dropout(p=dropout),
             nn.Linear(10000, num_classes) # problem with out features
         )
+
+        self.softmax = nn.Softmax(dim=1)
 
         # YOUR CODE HERE
         # Define a CNN architecture. Remember to use the variable num_classes
@@ -50,7 +54,9 @@ class MyModel(nn.Module):
         x = self.flatten(x)
         x = self.head(x)
 
-        return x
+        # return F.softmax(x, dim=1)
+        # return x
+        return self.softmax(x)
 
 
 ######################################################################################

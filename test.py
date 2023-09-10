@@ -13,3 +13,5 @@ print(a.shape)
 fl = torch.nn.Flatten()
 b = fl(z)
 print(b.shape)
+
+

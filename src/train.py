@@ -35,15 +35,15 @@ def train_one_epoch(train_dataloader, model, optimizer, loss):
             data, target = data.cuda(), target.cuda()
 
         # 1. clear the gradients of all optimized variables
-        # YOUR CODE HERE:
+        optimizer.zero_grad()
         # 2. forward pass: compute predicted outputs by passing inputs to the model
-        output  = # YOUR CODE HERE
+        output  = model(data)
         # 3. calculate the loss
-        loss_value  = # YOUR CODE HERE
+        loss_value  = loss(output, target)
         # 4. backward pass: compute gradient of the loss with respect to model parameters
-        # YOUR CODE HERE:
+        loss_value.backward()
         # 5. perform a single optimization step (parameter update)
-        # YOUR CODE HERE:
+        optimizer.step()
 
         # update average training loss
         train_loss = train_loss + (
@@ -61,7 +61,7 @@ def valid_one_epoch(valid_dataloader, model, loss):
     with torch.no_grad():
 
         # set the model to evaluation mode
-        # YOUR CODE HERE
+        model.eval()
 
         if torch.cuda.is_available():
             model.cuda()
@@ -79,9 +79,9 @@ def valid_one_epoch(valid_dataloader, model, loss):
                 data, target = data.cuda(), target.cuda()
 
             # 1. forward pass: compute predicted outputs by passing inputs to the model
-            output  = # YOUR CODE HERE
+            output  = model(data)
             # 2. calculate the loss
-            loss_value  = # YOUR CODE HERE
+            loss_value  = loss(output, target)
 
             # Calculate average validation loss
             valid_loss = valid_loss + (
@@ -106,7 +106,7 @@ def optimize(data_loaders, model, optimizer, loss, n_epochs, save_path, interact
     # plateau
     # HINT: look here: 
     # https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
-    scheduler  = # YOUR CODE HERE
+    scheduler  = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,)
 
     for epoch in range(1, n_epochs + 1):
 
@@ -130,12 +130,12 @@ def optimize(data_loaders, model, optimizer, loss, n_epochs, save_path, interact
             print(f"New minimum validation loss: {valid_loss:.6f}. Saving model ...")
 
             # Save the weights to save_path
-            # YOUR CODE HERE
+            torch.save(model.state_dict(), save_path)
 
             valid_loss_min = valid_loss
 
         # Update learning rate, i.e., make a step in the learning rate scheduler
-        # YOUR CODE HERE
+        scheduler.step(valid_loss)
 
         # Log the losses and the current learning rate
         if interactive_tracking:
@@ -157,7 +157,7 @@ def one_epoch_test(test_dataloader, model, loss):
     with torch.no_grad():
 
         # set the model to evaluation mode
-        # YOUR CODE HERE
+        model.eval()
 
         if torch.cuda.is_available():
             model = model.cuda()
@@ -174,18 +174,25 @@ def one_epoch_test(test_dataloader, model, loss):
                 data, target = data.cuda(), target.cuda()
 
             # 1. forward pass: compute predicted outputs by passing inputs to the model
-            logits  = # YOUR CODE HERE
+            print(data.shape)
+            logits  = model(data)
             # 2. calculate the loss
-            loss_value  = # YOUR CODE HERE
+            loss_value  = loss(logits, target)
 
             # update average test loss
             test_loss = test_loss + ((1 / (batch_idx + 1)) * (loss_value.data.item() - test_loss))
 
             # convert logits to predicted class
             # HINT: the predicted class is the index of the max of the logits
-            pred  = # YOUR CODE HERE
+            pred  = torch.argmax(logits, dim=1)
+            # pred = torch.max(logits.data, 1)
 
             # compare predictions to true label
+            print(target.shape)
+            # print(logits)
+            print(logits.shape)
+            # print(pred)
+            print(target.data.view_as(pred))
             correct += torch.sum(torch.squeeze(pred.eq(target.data.view_as(pred))).cpu())
             total += data.size(0)
 
