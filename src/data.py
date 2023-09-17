@@ -40,11 +40,15 @@ def get_data_loaders(
     # without augmentation)
     # HINT: resize the image to 256 first, then crop them to 224, then add the
     # appropriate transforms for that step
+    # PREVENTS OVERFITTING
     data_transforms = {
         "train": transforms.Compose(
             [
                 transforms.Resize((256, 256)),
-                transforms.CenterCrop(224),
+                transforms.RandomAffine(scale=(0.9, 1.1), translate=(0.1, 0.1), degrees=10),
+                transforms.ColorJitter(brightness=(0.5,1.5),contrast=(1),saturation=(0.5,1.5),hue=(-0.1,0.1)),
+                transforms.RandomHorizontalFlip(p=0.5),
+                transforms.RandomCrop(224, padding_mode="reflect", pad_if_needed=True),
                 transforms.ToTensor(),
                 transforms.Normalize(mean, std)
             ]
@@ -199,7 +203,7 @@ def test_data_loaders_keys(data_loaders):
 def test_data_loaders_output_type(data_loaders):
     # Test the data loaders
     dataiter = iter(data_loaders["train"])
-    images, labels = dataiter.next()
+    images, labels = next(dataiter)
 
     assert isinstance(images, torch.Tensor), "images should be a Tensor"
     assert isinstance(labels, torch.Tensor), "labels should be a Tensor"
@@ -209,8 +213,7 @@ def test_data_loaders_output_type(data_loaders):
 
 def test_data_loaders_output_shape(data_loaders):
     dataiter = iter(data_loaders["train"])
-    images, labels = dataiter.next()
-
+    images, labels = next(dataiter)
     assert len(images) == 2, f"Expected a batch of size 2, got size {len(images)}"
     assert (
         len(labels) == 2

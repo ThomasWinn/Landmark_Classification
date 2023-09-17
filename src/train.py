@@ -185,6 +185,7 @@ def one_epoch_test(test_dataloader, model, loss):
             # convert logits to predicted class
             # HINT: the predicted class is the index of the max of the logits
             pred  = torch.argmax(logits, dim=1)
+            # pred = logits.data.max(1, keepdim=1)[1]
             # pred = torch.max(logits.data, 1)
 
             # compare predictions to true label
