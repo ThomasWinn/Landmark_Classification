@@ -174,7 +174,6 @@ def one_epoch_test(test_dataloader, model, loss):
                 data, target = data.cuda(), target.cuda()
 
             # 1. forward pass: compute predicted outputs by passing inputs to the model
-            print(data.shape)
             logits  = model(data)
             # 2. calculate the loss
             loss_value  = loss(logits, target)
@@ -185,15 +184,8 @@ def one_epoch_test(test_dataloader, model, loss):
             # convert logits to predicted class
             # HINT: the predicted class is the index of the max of the logits
             pred  = torch.argmax(logits, dim=1)
-            # pred = logits.data.max(1, keepdim=1)[1]
-            # pred = torch.max(logits.data, 1)
 
             # compare predictions to true label
-            print(target.shape)
-            # print(logits)
-            print(logits.shape)
-            # print(pred)
-            print(target.data.view_as(pred))
             correct += torch.sum(torch.squeeze(pred.eq(target.data.view_as(pred))).cpu())
             total += data.size(0)
 

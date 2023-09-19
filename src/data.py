@@ -48,6 +48,7 @@ def get_data_loaders(
                 transforms.RandomAffine(scale=(0.9, 1.1), translate=(0.1, 0.1), degrees=10),
                 transforms.ColorJitter(brightness=(0.5,1.5),contrast=(1),saturation=(0.5,1.5),hue=(-0.1,0.1)),
                 transforms.RandomHorizontalFlip(p=0.5),
+                transforms.RandomRotation(90),
                 transforms.RandomCrop(224, padding_mode="reflect", pad_if_needed=True),
                 transforms.ToTensor(),
                 transforms.Normalize(mean, std)
